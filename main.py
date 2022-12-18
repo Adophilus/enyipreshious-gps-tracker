@@ -19,7 +19,7 @@ gpsd.connect()
 def getPositionData():
     packet = gpsd.get_current()
     latitude, longitude = packet.position()
-    print ("Your position: lon = " + str(longitude) + ", lat = " + str(latitude))
+    print(f"Your position: lon = {str(longitude)}, lat = {str(latitude)}")
     return latitude, longitude
 
 if __name__ == "__main__":
@@ -27,13 +27,12 @@ if __name__ == "__main__":
         print ("Application started!")
         while RUNNING:
             try:
-                position = getPositionData()
-                if (position):
-                    if not (position[0] == 0 and position[1] == 0):
+                if position := getPositionData():
+                    if position[0] != 0 or position[1] != 0:
                         gps_variable.save_value({"value": 0, "context": { "lat": position[0], "lng": position[1]}})
             except gpsd.NoFixError:
                 print("Try re-positioning GPS")
-                
+
             time.sleep(0.1)
 
     except (KeyboardInterrupt):
